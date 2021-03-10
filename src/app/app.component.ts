@@ -95,14 +95,14 @@ export class AppComponent implements OnInit {
       textarea.style.height =
         textNode.height() - textNode.padding() * 2 + 5 + 'px';
 
-      function removeTextarea(): void {
+      const removeTextarea = (): void => {
         textarea.parentNode?.removeChild(textarea);
         window.removeEventListener('click', handleOutsideClick);
         textNode.show();
         // tr.show();
         // tr.forceUpdate();
         upperLayer?.draw();
-      }
+      };
       /*function setTextareaWidth(newWidth: number): void {
         /*if (!newWidth) {
           // set width for placeholder
@@ -130,12 +130,12 @@ export class AppComponent implements OnInit {
           textarea.scrollHeight + textNode.fontSize() + 'px';
       });
 
-      function handleOutsideClick(e: MouseEvent): void {
+      const handleOutsideClick = (e: MouseEvent): void => {
         if (e.target !== textarea) {
           textNode.text(textarea.value);
           removeTextarea();
         }
-      }
+      };
       setTimeout(() => {
         window.addEventListener('click', handleOutsideClick);
       });
