@@ -15,6 +15,17 @@
         />
       </form>
     </div>
+    <div class="card-footer border-0 bg-white text-end">
+      <a class="link-secondary" role="button" (click)="importTestData()">
+        Utiliser un jeu de test
+      </a>
+    </div>
+  </div>
+</div>
+<div class="row justify-content-center" *ngIf="importedDataError.length > 0">
+  <div class="col-auto alert alert-success" role="alert">
+    <h4>Erreurs lors de l'import</h4>
+    <p>{{ importedDataError.toString() }}</p>
   </div>
 </div>
 <div class="row justify-content-center">

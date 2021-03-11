@@ -7,36 +7,37 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ImportedDataService {
   importedData: { [key: string]: string }[] = [];
-  lastImportError?: Papa.ParseError[];
-
-  ImportedDataSubject = new BehaviorSubject<{ [key: string]: string }[]>(
+  importedDataSubject = new BehaviorSubject<{ [key: string]: string }[]>(
     this.importedData
+  );
+
+  lastImportError: Papa.ParseError[] = [];
+  lastImportErrorSubject = new BehaviorSubject<Papa.ParseError[]>(
+    this.lastImportError
   );
 
   constructor() {}
 
-  async importCSVData(file: File) {
-    return new Promise<void>((resolve, reject) => {
-      Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          if (results.data.length > 0) {
-            this.importedData =
-              (results.data as { [key: string]: string }[]) || [];
-            this.updateSubs();
-            return resolve();
-          } else {
-            this.lastImportError = results.errors;
-            console.error(results.errors);
-            return reject(new Error());
-          }
-        },
-      });
+  importCSVData(file?: File) {
+    const path =
+      file === undefined
+        ? `${window.location.href}/assets/samplesData/users-50.csv`
+        : file;
+
+    Papa.parse(path, {
+      download: file === undefined, // If undefined, we use the sampleFile
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        this.importedData = (results.data as { [key: string]: string }[]) || [];
+        this.lastImportError = results.errors;
+        this.updateSubs();
+      },
     });
   }
 
   private updateSubs(): void {
-    this.ImportedDataSubject.next(this.importedData);
+    this.importedDataSubject.next(this.importedData);
+    this.lastImportErrorSubject.next(this.lastImportError);
   }
 }

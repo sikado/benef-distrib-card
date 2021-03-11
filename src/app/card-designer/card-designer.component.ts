@@ -20,7 +20,7 @@ export class CardDesignerComponent implements OnInit, OnDestroy {
   importedData: { [key: string]: string }[] = [];
 
   constructor(private importedDataService: ImportedDataService) {
-    this.importedDataService.ImportedDataSubject.subscribe((data) => {
+    this.importedDataService.importedDataSubject.subscribe((data) => {
       this.importedData = data;
       if (data.length > 0) {
         this.importedDataKeys = Object.keys(data[0]);
@@ -35,7 +35,7 @@ export class CardDesignerComponent implements OnInit, OnDestroy {
       const savedStage = localStorage.getItem('canva');
       if (savedStage !== null) {
         this.stage = Konva.Node.create(savedStage, this.KONVA_CONTRAINER_ID);
-        this.layer = this.stage.getLayer();
+        this.layer = this.stage.getLayer() || new Konva.Layer();
       }
     } catch {
       // void

@@ -10,10 +10,14 @@ export class DataImportComponent implements OnInit {
   importedData: {
     [key: string]: string;
   }[] = [];
+  importedDataError: Papa.ParseError[] = [];
 
   constructor(private importedDataService: ImportedDataService) {
-    this.importedDataService.ImportedDataSubject.subscribe((data) => {
+    this.importedDataService.importedDataSubject.subscribe((data) => {
       this.importedData = data;
+    });
+    this.importedDataService.lastImportErrorSubject.subscribe((errors) => {
+      this.importedDataError = errors;
     });
   }
 
@@ -27,5 +31,9 @@ export class DataImportComponent implements OnInit {
     if (file) {
       this.importedDataService.importCSVData(file);
     }
+  }
+
+  importTestData(): void {
+    this.importedDataService.importCSVData();
   }
 }
