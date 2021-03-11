@@ -30,6 +30,14 @@
             "prefix": "app",
             "style": "camelCase"
           }
+        ],
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": ["classProperty"],
+            "modifiers": ["readonly"],
+            "format": ["UPPER_CASE"]
+          }
         ]
       }
     },

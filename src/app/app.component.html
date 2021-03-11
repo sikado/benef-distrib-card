@@ -1,12 +1,42 @@
-<div class="container-fluid">
+<div class="container">
   <div class="row justify-content-center">
-    <div class="col-auto">
-      <h2>Benef-distrib-card</h2>
+    <div class="col-auto mb-3">
+      <h1 class="display-5">Benef-distrib-card</h1>
     </div>
   </div>
   <div class="row">
     <!-- Toolbox -->
     <div class="col-3">
+      <div class="row mb-2">
+        <div class="col w-100">
+          <div class="card">
+            <div class="card-body">
+              <!-- <button
+                type="button"
+                class="btn btn-outline-primary m-2"
+                (click)="onSave()"
+              >
+                Save Card
+              </button> -->
+              <button
+                type="button"
+                class="btn btn-outline-primary m-2"
+                (click)="onClearSave()"
+              >
+                Clear
+              </button>
+              <br />
+              <button
+                type="button"
+                class="btn btn-outline-primary m-2"
+                (click)="onExport()"
+              >
+                Export to PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="row gx-0">
         <div class="col-auto">
           <div class="list-group">
@@ -29,6 +59,7 @@
             </button>
             <button
               class="list-group-item list-group-item-action d-flex justify-content-center"
+              disabled
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -45,6 +76,7 @@
             </button>
             <button
               class="list-group-item list-group-item-action d-flex justify-content-center"
+              disabled
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +96,7 @@
         <div class="col">
           <div class="card">
             <div class="card-body">
-              <div class="row gx-2">
+              <div class="row g-2">
                 <div class="col-auto">
                   <button
                     type="button"
@@ -83,6 +115,7 @@
                         d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"
                       />
                     </svg>
+                    Add Rect
                   </button>
                 </div>
                 <div class="col-auto">
@@ -103,6 +136,7 @@
                         d="M12.258 3H3.747l-.082 2.46h.478c.26-1.544.76-1.783 2.694-1.845l.424-.013v7.827c0 .663-.144.82-1.3.923v.52h4.082v-.52c-1.162-.103-1.306-.26-1.306-.923V3.602l.43.013c1.935.062 2.434.301 2.694 1.846h.479L12.258 3z"
                       />
                     </svg>
+                    Add Text
                   </button>
                 </div>
               </div>
@@ -116,18 +150,15 @@
     <div class="col-6">
       <div class="card" id="konva-container"></div>
     </div>
-    <div class="col-2">
-      <button type="button" class="btn btn-outline-primary" (click)="onSave()">
-        Save
-      </button>
-      <br />
-      <button
-        type="button"
-        class="btn btn-outline-primary"
-        (click)="onExport()"
-      >
-        Export
-      </button>
+    <div class="col-3">
+      <div class="card">
+        <div class="card-body">
+          <app-obj-editor
+            [nodeAttrs]="transformer?.getNode()?.getAttrs()"
+            (update)="updateNodeAttrs($event)"
+          ></app-obj-editor>
+        </div>
+      </div>
     </div>
   </div>
 </div>

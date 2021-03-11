@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Konva from 'konva';
 import jsPDF from 'jspdf';
+import { Helpers } from './helpers';
 
 @Component({
   selector: 'app-root',
@@ -8,160 +9,124 @@ import jsPDF from 'jspdf';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  stage?: Konva.Stage;
-  layer?: Konva.Layer;
+  readonly KONVA_CONTRAINER_ID = 'konva-container';
+
+  stage!: Konva.Stage;
+  layer!: Konva.Layer;
+  transformer?: Konva.Transformer;
+
+  constructor() {}
 
   ngOnInit(): void {
-    const KONVA_CONTRAINER_ID = 'konva-container';
-    const containerWidth = document.getElementById(KONVA_CONTRAINER_ID)
-      ?.clientWidth;
+    /* try {
+      const savedStage = localStorage.getItem('canva');
+      if (savedStage !== null) {
+        this.stage = Konva.Node.create(savedStage, this.KONVA_CONTRAINER_ID);
+      }
+    } catch {
+      // void
+    } */
 
-    const savedStage = localStorage.getItem('canva');
-    if (savedStage !== null) {
-      this.stage = Konva.Node.create(savedStage, KONVA_CONTRAINER_ID);
-    } else {
-      this.stage = new Konva.Stage({
-        container: KONVA_CONTRAINER_ID,
-        width: containerWidth ?? 400,
-        height: 400,
-      });
-
-      // add canvas element
-      this.layer = new Konva.Layer();
-      this.stage.add(this.layer);
-      this.layer.draw();
+    // Si le chargement de la save n'a pas fonctionné ou n'existe pas
+    if (this.stage === undefined) {
+      this.initStage();
     }
   }
 
   onAddRect(): void {
+    const DEFAULT_RECT_SIZE = { width: 100, height: 50 };
     const box = new Konva.Rect({
-      x: 50,
-      y: 50,
-      width: 100,
-      height: 50,
+      x: Helpers.getRandomInt(
+        this.stage.size().width - DEFAULT_RECT_SIZE.width
+      ),
+      y: Helpers.getRandomInt(
+        this.stage.size().height - DEFAULT_RECT_SIZE.height
+      ),
+      width: DEFAULT_RECT_SIZE.width,
+      height: DEFAULT_RECT_SIZE.height,
       fill: '#00D2FF',
       stroke: 'black',
       strokeWidth: 4,
       draggable: true,
     });
-    const tr = new Konva.Transformer({
-      node: box,
-      enabledAnchors: ['bottom-left', 'top-right'],
-      boundBoxFunc: (oldBox, newBox) => {
-        newBox.width = Math.max(30, newBox.width);
-        return newBox;
-      },
-    });
 
-    this.layer?.add(box);
-    this.layer?.add(tr);
-    this.layer?.draw();
+    this.layer.add(box);
+    this.layer.draw();
   }
 
   onAddText(): void {
+    const DEFAULT_WIDTH = 200;
     const textNode = new Konva.Text({
       text: 'Some text here',
-      x: 50,
-      y: 80,
+      x: Helpers.getRandomInt(this.stage.size().width - DEFAULT_WIDTH),
+      y: Helpers.getRandomInt(this.stage.size().height - 10),
       fontSize: 20,
       draggable: true,
-      width: 200,
-      placeholder: 'Some text here',
+      //width: DEFAULT_WIDTH,
     });
-    this.layer?.add(textNode);
-    this.layer?.draw();
-    const upperLayer = this.layer;
 
-    textNode.on('dblclick dbltap', () => {
-      textNode.hide();
-      const textPosition = textNode.absolutePosition();
-      console.log(
-        textPosition,
-        this.stage?.container().offsetLeft,
-        this.stage?.container().offsetTop
-      );
-      const areaPosition = {
-        x: (this.stage?.container().offsetLeft || 0) + textPosition.x,
-        y: (this.stage?.container().offsetTop || 0) + textPosition.y,
-      };
-      const textarea = document.createElement('textarea');
-      document.body.appendChild(textarea);
-      textarea.value = textNode.text();
-      textarea.focus();
-      textarea.style.position = 'absolute';
-      textarea.style.top = areaPosition.y + 'px';
-      textarea.style.left = areaPosition.x + 'px';
-      textarea.style.width = textNode.width() - textNode.padding() * 2 + 'px';
-      textarea.style.height =
-        textNode.height() - textNode.padding() * 2 + 5 + 'px';
-
-      const removeTextarea = (): void => {
-        textarea.parentNode?.removeChild(textarea);
-        window.removeEventListener('click', handleOutsideClick);
-        textNode.show();
-        // tr.show();
-        // tr.forceUpdate();
-        upperLayer?.draw();
-      };
-      /*function setTextareaWidth(newWidth: number): void {
-        /*if (!newWidth) {
-          // set width for placeholder
-          newWidth = textNode.placeholder.length * textNode.fontSize();
-        } /
-      } */
-      textarea.addEventListener('keydown', (e) => {
-        // hide on enter
-        // but don't hide on shift + enter
-        if (e.key === 'Enter' && !e.shiftKey) {
-          textNode.text(textarea.value);
-          removeTextarea();
-        }
-        // on esc do not set value back to node
-        if (e.key === 'Escape') {
-          removeTextarea();
-        }
-      });
-
-      textarea.addEventListener('keydown', (e) => {
-        const scale = textNode.getAbsoluteScale().x;
-        // setTextareaWidth(textNode.width() * scale);
-        textarea.style.height = 'auto';
-        textarea.style.height =
-          textarea.scrollHeight + textNode.fontSize() + 'px';
-      });
-
-      const handleOutsideClick = (e: MouseEvent): void => {
-        if (e.target !== textarea) {
-          textNode.text(textarea.value);
-          removeTextarea();
-        }
-      };
-      setTimeout(() => {
-        window.addEventListener('click', handleOutsideClick);
-      });
-    });
+    this.layer.add(textNode);
+    this.layer.draw();
   }
 
-  onSave(): void {
-    localStorage.setItem('canva', this.stage?.toJSON() || '');
+  onClearSave(): void {
+    localStorage.removeItem('canva');
+    this.initStage();
   }
+
+  /* onSave(): void {
+    localStorage.setItem('canva', this.stage.toJSON() || '');
+  } */
 
   onExport(): void {
     const pdf = new jsPDF('l', 'px', [
-      this.stage?.width() || 0,
-      this.stage?.height() || 0,
+      this.stage.width() || 0,
+      this.stage.height() || 0,
     ]);
-    pdf.setTextColor('#000000');
-
-    // then put image on top of texts (so texts are not visible)
     pdf.addImage(
-      this.stage?.toDataURL({ pixelRatio: 2 }) || '',
+      this.stage.toDataURL({ pixelRatio: 2 }) || '',
       0,
       0,
-      this.stage?.width() || 0,
-      this.stage?.height() || 0
+      this.stage.width() || 0,
+      this.stage.height() || 0
     );
 
     pdf.output('pdfobjectnewwindow');
+  }
+
+  updateNodeAttrs(attrs: { [key: string]: any }): void {
+    const selectedNode = this.transformer?.getNode();
+    if (selectedNode !== undefined) {
+      selectedNode.setAttrs(attrs);
+      this.layer.draw();
+    }
+  }
+
+  private initStage() {
+    const containerWidth =
+      document.getElementById(this.KONVA_CONTRAINER_ID)?.clientWidth || 400;
+    this.stage = new Konva.Stage({
+      container: this.KONVA_CONTRAINER_ID,
+      width: containerWidth,
+      height: 400,
+    });
+
+    this.stage.on('click', (e) => {
+      if (this.transformer !== undefined) {
+        this.transformer.destroy();
+      }
+      if (e.target.getType() === 'Shape') {
+        this.transformer = new Konva.Transformer({
+          nodes: [e.target],
+        });
+        this.layer.add(this.transformer);
+      }
+      this.layer.draw();
+    });
+
+    // add canvas element
+    this.layer = new Konva.Layer();
+    this.stage.add(this.layer);
+    this.layer.draw();
   }
 }
