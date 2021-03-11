@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ObjEditorComponent } from './obj-editor.component';
+import { DataImportComponent } from './data-import.component';
 
-describe('ObjEditorComponent', () => {
-  let component: ObjEditorComponent;
-  let fixture: ComponentFixture<ObjEditorComponent>;
+describe('DataImportComponent', () => {
+  let component: DataImportComponent;
+  let fixture: ComponentFixture<DataImportComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ObjEditorComponent],
+      declarations: [DataImportComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ObjEditorComponent);
+    fixture = TestBed.createComponent(DataImportComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

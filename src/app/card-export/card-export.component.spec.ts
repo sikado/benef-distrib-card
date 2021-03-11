@@ -1,19 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ObjEditorComponent } from './obj-editor.component';
+import { CardExportComponent } from './card-export.component';
 
-describe('ObjEditorComponent', () => {
-  let component: ObjEditorComponent;
-  let fixture: ComponentFixture<ObjEditorComponent>;
+describe('CardExportComponent', () => {
+  let component: CardExportComponent;
+  let fixture: ComponentFixture<CardExportComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ObjEditorComponent],
+      declarations: [CardExportComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ObjEditorComponent);
+    fixture = TestBed.createComponent(CardExportComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

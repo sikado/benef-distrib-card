@@ -1,0 +1,135 @@
+<!-- Toolbox -->
+<div class="row">
+  <div class="col-2">
+    <div class="row gx-0">
+      <div class="col">
+        <div class="card pt-2">
+          <div class="card-title text-center">
+            <h4>Palette</h4>
+          </div>
+          <div class="card-body pt-0">
+            <div class="row g-2 border-bottom pb-2">
+              <div class="col-auto">
+                <button
+                  type="button"
+                  class="btn btn-outline-dark btn-sm"
+                  (click)="onAddRect()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1em"
+                    height="1em"
+                    fill="currentColor"
+                    class="bi bi-square-fill"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2z"
+                    />
+                  </svg>
+                  Add Rect
+                </button>
+              </div>
+              <div class="col-auto">
+                <button
+                  type="button"
+                  class="btn btn-outline-dark btn-sm"
+                  (click)="onAddText()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1em"
+                    height="1em"
+                    fill="currentColor"
+                    class="bi bi-fonts"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      d="M12.258 3H3.747l-.082 2.46h.478c.26-1.544.76-1.783 2.694-1.845l.424-.013v7.827c0 .663-.144.82-1.3.923v.52h4.082v-.52c-1.162-.103-1.306-.26-1.306-.923V3.602l.43.013c1.935.062 2.434.301 2.694 1.846h.479L12.258 3z"
+                    />
+                  </svg>
+                  Add Text
+                </button>
+              </div>
+              <div class="col-auto">
+                <div class="btn-group" dropdown>
+                  <button
+                    class="btn btn-outline-dark btn-sm dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    dropdownToggle
+                    [disabled]="importedDataKeys.length === 0"
+                  >
+                    Add Data
+                  </button>
+                  <ul
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                    *dropdownMenu
+                  >
+                    <li *ngFor="let i of importedDataKeys">
+                      <a
+                        class="dropdown-item"
+                        (click)="onAddData(i)"
+                        role="button"
+                        >{{ i }}</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row g-2 mt-2">
+              <div class="col-auto">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="onSave()"
+                >
+                  Save Card
+                </button>
+              </div>
+              <div class="col-auto">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  (click)="onClearSave()"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-body">
+            <button
+              type="button"
+              class="btn btn-outline-primary m-2"
+              (click)="onExport()"
+            >
+              Export to PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Konva -->
+  <div class="col-6">
+    <div class="card" id="konva-container"></div>
+  </div>
+  <div class="col-3">
+    <div class="card">
+      <div class="card-body">
+        <app-obj-editor
+          [nodeAttrs]="transformer?.getNode()?.getAttrs()"
+          (update)="updateNodeAttrs($event)"
+        ></app-obj-editor>
+      </div>
+    </div>
+  </div>
+</div>

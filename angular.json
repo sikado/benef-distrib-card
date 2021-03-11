@@ -36,7 +36,8 @@
             "allowedCommonJsDependencies": [
               "konva",
               "raf",
-              "@babel/runtime-corejs3"
+              "@babel/runtime-corejs3",
+              "papaparse"
             ]
           },
           "configurations": {
