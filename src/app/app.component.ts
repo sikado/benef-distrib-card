@@ -18,19 +18,16 @@ export class AppComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    /* try {
+    try {
       const savedStage = localStorage.getItem('canva');
       if (savedStage !== null) {
         this.stage = Konva.Node.create(savedStage, this.KONVA_CONTRAINER_ID);
+        this.layer = this.stage.getLayer();
       }
     } catch {
       // void
-    } */
-
-    // Si le chargement de la save n'a pas fonctionné ou n'existe pas
-    if (this.stage === undefined) {
-      this.initStage();
     }
+    this.initStage();
   }
 
   onAddRect(): void {
@@ -71,25 +68,51 @@ export class AppComponent implements OnInit {
 
   onClearSave(): void {
     localStorage.removeItem('canva');
+    this.layer?.destroy();
+    this.stage?.destroy();
     this.initStage();
   }
 
-  /* onSave(): void {
+  onSave(): void {
     localStorage.setItem('canva', this.stage.toJSON() || '');
-  } */
+  }
 
   onExport(): void {
-    const pdf = new jsPDF('l', 'px', [
+    const pdf = new jsPDF(); // A4, portrait, mm
+    /*'l', 'px', [
       this.stage.width() || 0,
       this.stage.height() || 0,
-    ]);
-    pdf.addImage(
-      this.stage.toDataURL({ pixelRatio: 2 }) || '',
-      0,
-      0,
-      this.stage.width() || 0,
-      this.stage.height() || 0
-    );
+    ]);*/
+
+    // Target grid : 2 x 3
+    // Margin 7mm
+
+    const GRID = { x: 2, y: 5 };
+    const MARGIN = 7;
+    const RATIO = 0.5; // x/y
+    const PAPER_SIZE = { x: 210, y: 297 };
+
+    const maxSizeX = (PAPER_SIZE.x - MARGIN * (GRID.x + 1)) / GRID.x;
+    const maxSizeY = (PAPER_SIZE.y - MARGIN * (GRID.y + 1)) / GRID.y;
+
+    let IMG_SIZE = { w: maxSizeX, h: maxSizeX * RATIO };
+    if (IMG_SIZE.h > maxSizeY) {
+      IMG_SIZE = { w: maxSizeY / RATIO, h: maxSizeY * RATIO };
+    }
+
+    const imageData = this.stage.toDataURL({ pixelRatio: 2 }) || '';
+    // const imageData = this.stage.toCanvas();
+    for (let i = 0; i < GRID.x; i++) {
+      for (let j = 0; j < GRID.y; j++) {
+        pdf.addImage(
+          imageData,
+          MARGIN + (MARGIN + IMG_SIZE.w) * i,
+          MARGIN + (MARGIN + IMG_SIZE.h) * j,
+          IMG_SIZE.w,
+          IMG_SIZE.h
+        );
+      }
+    }
 
     pdf.output('pdfobjectnewwindow');
   }
@@ -103,19 +126,33 @@ export class AppComponent implements OnInit {
   }
 
   private initStage() {
-    const containerWidth =
-      document.getElementById(this.KONVA_CONTRAINER_ID)?.clientWidth || 400;
-    this.stage = new Konva.Stage({
-      container: this.KONVA_CONTRAINER_ID,
-      width: containerWidth,
-      height: 400,
-    });
+    if (this.stage === undefined) {
+      const containerWidth =
+        document.getElementById(this.KONVA_CONTRAINER_ID)?.clientWidth || 400;
+      this.stage = new Konva.Stage({
+        container: this.KONVA_CONTRAINER_ID,
+        width: containerWidth,
+        height: containerWidth / 2,
+      });
+      this.layer = new Konva.Layer();
+      this.stage.add(this.layer);
+      const cadre = new Konva.Rect({
+        name: 'cadre',
+        x: 0,
+        y: 0,
+        width: this.stage.getSize().width,
+        height: this.stage.getSize().height,
+        stroke: 'black',
+        strokeWidth: 1,
+      });
+      this.layer.add(cadre);
+    }
 
     this.stage.on('click', (e) => {
       if (this.transformer !== undefined) {
         this.transformer.destroy();
       }
-      if (e.target.getType() === 'Shape') {
+      if (e.target.getType() === 'Shape' && e.target.name() !== 'cadre') {
         this.transformer = new Konva.Transformer({
           nodes: [e.target],
         });
@@ -124,9 +161,6 @@ export class AppComponent implements OnInit {
       this.layer.draw();
     });
 
-    // add canvas element
-    this.layer = new Konva.Layer();
-    this.stage.add(this.layer);
     this.layer.draw();
   }
 }

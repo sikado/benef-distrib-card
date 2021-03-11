@@ -8,7 +8,6 @@ import {
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ColorPickerControl } from '@iplab/ngx-color-picker';
-import Konva from 'konva';
 import { debounceTime } from 'rxjs/operators';
 
 @Component({
@@ -55,9 +54,15 @@ export class ObjEditorComponent implements OnInit, OnChanges {
           });
         } else {
           this.objForm.controls[key].enable();
-          this.objForm.controls[key].setValue(this.nodeAttrs?.[key] || '', {
-            emitEvent: false,
-          });
+          if (this.nodeAttrs?.[key] !== undefined) {
+            this.objForm.controls[key].setValue(this.nodeAttrs?.[key] || '', {
+              emitEvent: false,
+            });
+          } else {
+            this.objForm.controls[key].reset({
+              emitEvent: false,
+            });
+          }
         }
       });
     }
