@@ -3,6 +3,7 @@ import { jsPDF } from 'jspdf';
 import Konva from 'konva';
 import { RectConfig } from 'konva/types/shapes/Rect';
 import { TextConfig } from 'konva/types/shapes/Text';
+import { BehaviorSubject } from 'rxjs';
 import { Helpers } from '../helpers';
 import { keyValue } from '../models/types';
 
@@ -12,6 +13,10 @@ import { keyValue } from '../models/types';
 export class CanvaService {
   container = document.createElement('div');
   stage: Konva.Stage;
+
+  selectedShapeSubject = new BehaviorSubject<Konva.Shape | undefined>(
+    undefined
+  );
 
   constructor() {
     this.stage = new Konva.Stage({
@@ -43,8 +48,10 @@ export class CanvaService {
       }
       if (e.target.getType() === 'Shape' && e.target.name() !== 'cadre') {
         tr.setNodes([e.target]);
+        this.selectedShapeSubject.next(e.target as Konva.Shape);
       } else {
         tr.setNodes([]);
+        this.selectedShapeSubject.next(undefined);
       }
       this.getMainLayer().draw();
     });

@@ -1,14 +1,10 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ColorPickerControl } from '@iplab/ngx-color-picker';
+import Konva from 'konva';
 import { debounceTime } from 'rxjs/operators';
+import { keyValue as KeyValue } from '../models/types';
+import { CanvaService } from '../services/canva.service';
 
 @Component({
   selector: 'app-obj-editor',
@@ -18,9 +14,8 @@ import { debounceTime } from 'rxjs/operators';
 /**
  * @TODO Rendre le template dynamique basé sur une class dédié (https://angular.io/guide/dynamic-form)
  */
-export class ObjEditorComponent implements OnInit, OnChanges {
-  @Input() nodeAttrs?: { [key: string]: any };
-  @Output() update = new EventEmitter<{ [key: string]: any }>();
+export class ObjEditorComponent implements OnInit {
+  selectedShape?: Konva.Shape;
 
   public compactControl = new ColorPickerControl();
   showColorPicker = false;
@@ -34,38 +29,35 @@ export class ObjEditorComponent implements OnInit, OnChanges {
     strokeWidth: [undefined],
   });
 
-  constructor(private fb: FormBuilder) {}
-
-  ngOnInit(): void {
-    this.objForm.valueChanges.pipe(debounceTime(400)).subscribe(() => {
-      if (this.nodeAttrs !== undefined) {
-        this.update.emit(this.objForm.value);
+  constructor(private fb: FormBuilder, private canvaService: CanvaService) {
+    this.canvaService.selectedShapeSubject.subscribe((shape) => {
+      this.selectedShape = shape;
+      if (this.selectedShape !== undefined) {
+        const attrs = this.selectedShape.getAttrs() as KeyValue;
+        Object.keys(this.objForm.controls).forEach((key) => {
+          if (attrs[key] === undefined) {
+            this.objForm.controls[key].disable({ emitEvent: false });
+            this.objForm.controls[key].setValue(undefined, {
+              emitEvent: false,
+            });
+          } else {
+            this.objForm.controls[key].enable({ emitEvent: false });
+            this.objForm.controls[key].setValue(attrs[key], {
+              emitEvent: false,
+            });
+          }
+        });
       }
     });
   }
 
-  ngOnChanges(): void {
-    if (this.nodeAttrs !== undefined) {
-      Object.keys(this.objForm.controls).forEach((key) => {
-        if (this.nodeAttrs?.[key] === undefined) {
-          this.objForm.controls[key].disable();
-          this.objForm.controls[key].setValue(undefined, {
-            emitEvent: false,
-          });
-        } else {
-          this.objForm.controls[key].enable();
-          if (this.nodeAttrs?.[key] !== undefined) {
-            this.objForm.controls[key].setValue(this.nodeAttrs?.[key] || '', {
-              emitEvent: false,
-            });
-          } else {
-            this.objForm.controls[key].reset({
-              emitEvent: false,
-            });
-          }
-        }
-      });
-    }
+  ngOnInit(): void {
+    this.objForm.valueChanges.pipe(debounceTime(400)).subscribe(() => {
+      if (this.selectedShape !== undefined) {
+        this.selectedShape.setAttrs({ ...this.objForm.value });
+        this.canvaService.getMainLayer().draw();
+      }
+    });
   }
 
   onFocusInStroke(): void {

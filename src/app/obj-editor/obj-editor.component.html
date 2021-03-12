@@ -1,79 +1,83 @@
-<form [formGroup]="objForm">
-  <div class="row mb-3">
-    <p class="lead">Text obj properties</p>
+<div class="card">
+  <div class="card-body">
+    <form [formGroup]="objForm">
+      <div class="row mb-3">
+        <p class="lead">Text obj properties</p>
+      </div>
+      <div class="row mb-3">
+        <label for="textInput" class="col-4 col-form-label">Text</label>
+        <div class="col">
+          <input
+            name="textInput"
+            formControlName="text"
+            type="text"
+            class="form-control"
+            id="textInput"
+          />
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label for="fontSizeInput" class="col-4 col-form-label"
+          >Font Size</label
+        >
+        <div class="col">
+          <input
+            name="fontSizeInput"
+            formControlName="fontSize"
+            type="number"
+            class="form-control"
+            id="fontSizeInput"
+          />
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label for="fillInput" class="col-4 col-form-label">Color</label>
+        <div class="col">
+          <input
+            name="fillInput"
+            formControlName="fill"
+            type="text"
+            class="form-control"
+            id="fillInput"
+            (focusin)="onFocusIn()"
+            (focusout)="onFocusOut()"
+          />
+        </div>
+        <div class="position-absolute" *ngIf="showColorPicker">
+          <compact-picker [control]="compactControl"></compact-picker>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label for="strokeInput" class="col-4 col-form-label">Stroke</label>
+        <div class="col">
+          <input
+            name="strokeInput"
+            formControlName="stroke"
+            type="text"
+            class="form-control"
+            id="strokeInput"
+            (focusin)="onFocusInStroke()"
+            (focusout)="onFocusOutStroke()"
+          />
+        </div>
+        <div class="position-absolute" *ngIf="showColorPickerStroke">
+          <compact-picker [control]="compactControl"></compact-picker>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label for="strokeWidthInput" class="col-4 col-form-label"
+          >Stroke Width</label
+        >
+        <div class="col">
+          <input
+            name="strokeWidthInput"
+            formControlName="strokeWidth"
+            type="number"
+            class="form-control"
+            id="strokeWidthInput"
+          />
+        </div>
+      </div>
+    </form>
   </div>
-  <div class="row mb-3">
-    <label for="textInput" class="col-4 col-form-label">Text</label>
-    <div class="col">
-      <input
-        name="textInput"
-        formControlName="text"
-        type="text"
-        class="form-control"
-        id="textInput"
-      />
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="fontSizeInput" class="col-4 col-form-label">Font Size</label>
-    <div class="col">
-      <input
-        name="fontSizeInput"
-        formControlName="fontSize"
-        type="number"
-        class="form-control"
-        id="fontSizeInput"
-      />
-    </div>
-  </div>
-  <div class="row mb-3">
-    <label for="fillInput" class="col-4 col-form-label">Color</label>
-    <div class="col">
-      <input
-        name="fillInput"
-        formControlName="fill"
-        type="text"
-        class="form-control"
-        id="fillInput"
-        (focusin)="onFocusIn()"
-        (focusout)="onFocusOut()"
-      />
-    </div>
-    <compact-picker
-      *ngIf="showColorPicker"
-      [control]="compactControl"
-    ></compact-picker>
-  </div>
-  <div class="row mb-3">
-    <label for="strokeInput" class="col-4 col-form-label">Stroke</label>
-    <div class="col">
-      <input
-        name="strokeInput"
-        formControlName="stroke"
-        type="text"
-        class="form-control"
-        id="strokeInput"
-        (focusin)="onFocusInStroke()"
-        (focusout)="onFocusOutStroke()"
-      />
-    </div>
-    <compact-picker
-      *ngIf="showColorPickerStroke"
-      [control]="compactControl"
-    ></compact-picker>
-  </div>
-  <div class="row mb-3">
-    <label for="strokeWidthInput" class="col-4 col-form-label"
-      >Stroke Width</label
-    >
-    <div class="col">
-      <input
-        name="strokeWidthInput"
-        formControlName="strokeWidth"
-        type="number"
-        class="form-control"
-        id="strokeWidthInput"
-      />
-    </div>
-  </div>
-</form>
+</div>
