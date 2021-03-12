@@ -55,11 +55,10 @@
       </svg>
       <li class="nav-item">
         <a
-          class="nav-link disabled"
+          class="nav-link"
           role="button"
           (click)="navigateTo('export')"
           [ngClass]="{ active: displayedComp === 'export' }"
-          disabled
         >
           Export PDF
         </a>
@@ -68,5 +67,5 @@
   </div>
   <app-data-import *ngIf="displayedComp === 'import'"></app-data-import>
   <app-card-designer *ngIf="displayedComp === 'design'"></app-card-designer>
-  <!-- <app-card-export *ngIf="displayedComp === 'export'"></app-card-export> -->
+  <app-card-export *ngIf="displayedComp === 'export'"></app-card-export>
 </div>

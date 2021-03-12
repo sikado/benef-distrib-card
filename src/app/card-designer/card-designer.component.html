@@ -124,32 +124,23 @@
             </div> -->
           </div>
         </div>
-        <div class="card mt-3">
-          <div class="card-body">
-            <button
-              type="button"
-              class="btn btn-outline-primary m-2"
-              (click)="onExport()"
-            >
-              Export to PDF
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   </div>
 
   <!-- Konva -->
-  <div class="col-6">
-    <div class="card" id="konva-container"></div>
+  <div class="col-auto">
+    <div class="card">
+      <div #Konva></div>
+    </div>
   </div>
   <div class="col-3">
     <div class="card">
       <div class="card-body">
-        <app-obj-editor
+        <!-- <app-obj-editor
           [nodeAttrs]="transformer?.getNode()?.getAttrs()"
           (update)="updateNodeAttrs($event)"
-        ></app-obj-editor>
+        ></app-obj-editor>-->
       </div>
     </div>
   </div>
