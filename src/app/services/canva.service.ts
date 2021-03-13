@@ -114,15 +114,17 @@ export class CanvaService {
     this.getMainLayer().add(textNode).draw();
   }
 
-  exportToPDF(data: keyValue[]): void {
-    const GRID = { x: 2, y: 5 }; // Target grid : 2 x 5
-    const MARGIN = 7; // Margin 7mm
+  exportToPDF(
+    data: keyValue[],
+    grid: { x: number; y: number },
+    margin: number
+  ): void {
     const RATIO = 0.5; // x/y
     const PAPER_SIZE = { x: 210, y: 297 }; // A4
 
     // On cherche la carte la plus grande possible
-    const maxSizeX = (PAPER_SIZE.x - MARGIN * (GRID.x + 1)) / GRID.x;
-    const maxSizeY = (PAPER_SIZE.y - MARGIN * (GRID.y + 1)) / GRID.y;
+    const maxSizeX = (PAPER_SIZE.x - margin * (grid.x + 1)) / grid.x;
+    const maxSizeY = (PAPER_SIZE.y - margin * (grid.y + 1)) / grid.y;
     let imgSize = { w: maxSizeX, h: maxSizeX * RATIO };
     if (imgSize.h > maxSizeY) {
       imgSize = { w: maxSizeY / RATIO, h: maxSizeY * RATIO };
@@ -133,8 +135,8 @@ export class CanvaService {
 
     // Breaké si on est à la fin de importedData
     while (true) {
-      for (let i = 0; i < GRID.x && dataIndex < data.length; i++) {
-        for (let j = 0; j < GRID.y && dataIndex < data.length; j++) {
+      for (let i = 0; i < grid.x && dataIndex < data.length; i++) {
+        for (let j = 0; j < grid.y && dataIndex < data.length; j++) {
           this.getMainLayer()
             .find('.#Data')
             .each((node) => {
@@ -149,8 +151,8 @@ export class CanvaService {
           pdf.addImage(
             // this.stage.toDataURL({ pixelRatio: 2 }) || '',
             this.stage.toCanvas({ pixelRatio: 2 }) || '',
-            MARGIN + (MARGIN + imgSize.w) * i,
-            MARGIN + (MARGIN + imgSize.h) * j,
+            margin + (margin + imgSize.w) * i,
+            margin + (margin + imgSize.h) * j,
             imgSize.w,
             imgSize.h
           );

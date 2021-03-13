@@ -3,8 +3,8 @@ import { FormBuilder } from '@angular/forms';
 import { ColorPickerControl } from '@iplab/ngx-color-picker';
 import Konva from 'konva';
 import { debounceTime } from 'rxjs/operators';
-import { keyValue as KeyValue } from '../models/types';
-import { CanvaService } from '../services/canva.service';
+import { keyValue as KeyValue } from '../../models/types';
+import { CanvaService } from '../../services/canva.service';
 
 @Component({
   selector: 'app-obj-editor',

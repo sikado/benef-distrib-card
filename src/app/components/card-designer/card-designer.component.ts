@@ -6,8 +6,8 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { ImportedDataService } from '../services/imported-data.service';
-import { CanvaService } from '../services/canva.service';
+import { ImportedDataService } from '../../services/imported-data.service';
+import { CanvaService } from '../../services/canva.service';
 
 @Component({
   selector: 'app-card-designer',
