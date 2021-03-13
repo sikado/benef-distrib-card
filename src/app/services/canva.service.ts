@@ -114,11 +114,28 @@ export class CanvaService {
     this.getMainLayer().add(textNode).draw();
   }
 
+  getPDFPreview(
+    data: keyValue[],
+    grid: { x: number; y: number },
+    margin: number
+  ) {
+    return this.generatePDF(data, grid, margin, true).output('datauristring');
+  }
+
   exportToPDF(
     data: keyValue[],
     grid: { x: number; y: number },
     margin: number
   ): void {
+    this.generatePDF(data, grid, margin).output('dataurlnewwindow');
+  }
+
+  private generatePDF(
+    data: keyValue[],
+    grid: { x: number; y: number },
+    margin: number,
+    preview = false
+  ): jsPDF {
     const RATIO = 0.5; // x/y
     const PAPER_SIZE = { x: 210, y: 297 }; // A4
 
@@ -159,13 +176,13 @@ export class CanvaService {
           dataIndex++;
         }
       }
-      if (dataIndex < data.length) {
+      if (dataIndex < data.length && !preview) {
         pdf.addPage('a4', 'p');
       } else {
         break;
       }
     }
 
-    pdf.output('pdfobjectnewwindow');
+    return pdf;
   }
 }

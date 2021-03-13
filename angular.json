@@ -37,7 +37,8 @@
               "konva",
               "raf",
               "@babel/runtime-corejs3",
-              "papaparse"
+              "papaparse",
+              "pdfjs-dist"
             ]
           },
           "configurations": {
