@@ -80,9 +80,9 @@ export class CanvaService {
       ),
       width: DEFAULT_RECT_SIZE.width,
       height: DEFAULT_RECT_SIZE.height,
-      fill: '#00D2FF',
-      stroke: '#000000',
-      strokeWidth: 4,
+      fill: Helpers.getRandomHexColor(),
+      stroke: Helpers.getRandomHexColor(),
+      strokeWidth: Helpers.getRandomInt(4),
       draggable: true,
     });
 
@@ -114,12 +114,38 @@ export class CanvaService {
     this.getMainLayer().add(textNode).draw();
   }
 
+  addImg(imageElem: HTMLImageElement): void {
+    const img = new Konva.Image({
+      x: Helpers.getRandomInt(this.stage.size().width - imageElem.clientWidth),
+      y: Helpers.getRandomInt(
+        this.stage.size().height - imageElem.clientHeight
+      ),
+      image: imageElem,
+      width: imageElem.clientWidth,
+      height: imageElem.clientHeight,
+      draggable: true,
+    });
+
+    // add the shape to the layer
+    this.getMainLayer().add(img).batchDraw();
+  }
+
   getPDFPreview(
     data: keyValue[],
     grid: { x: number; y: number },
     margin: number
   ) {
     return this.generatePDF(data, grid, margin, true).output('datauristring');
+  }
+
+  unselectAll(): void {
+    const tr: Konva.Transformer | undefined = this.stage.findOne(
+      'Transformer'
+    ) as Konva.Transformer;
+    if (tr !== undefined) {
+      tr.setNodes([]);
+      this.selectedShapeSubject.next(undefined);
+    }
   }
 
   exportToPDF(
@@ -148,7 +174,15 @@ export class CanvaService {
     }
 
     const pdf = new jsPDF('p', 'mm', 'a4');
+
+    if (data.length === 0) {
+      pdf.text('Missing imported data', margin, margin);
+      return pdf;
+    }
+
     let dataIndex = 0; // L'index de la data en cours d'affichage dans la carte
+
+    this.unselectAll();
 
     // Breaké si on est à la fin de importedData
     while (true) {

@@ -22,11 +22,11 @@ export class ObjEditorComponent implements OnInit {
   showColorPickerStroke = false;
 
   objForm = this.fb.group({
-    text: [undefined],
-    fontSize: [undefined],
-    fill: [undefined],
-    stroke: [undefined],
-    strokeWidth: [undefined],
+    text: [{ value: undefined, disabled: true }],
+    fontSize: [{ value: undefined, disabled: true }],
+    fill: [{ value: undefined, disabled: true }],
+    stroke: [{ value: undefined, disabled: true }],
+    strokeWidth: [{ value: undefined, disabled: true }],
   });
 
   constructor(private fb: FormBuilder, private canvaService: CanvaService) {

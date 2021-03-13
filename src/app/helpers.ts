@@ -15,4 +15,28 @@ export class Helpers {
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
+
+  /**
+   * Return a random hex color
+   */
+  static getRandomHexColor() {
+    Helpers.getRandomInt(255).toString(16);
+    return (
+      '#' +
+      Helpers.getRandomHex() +
+      Helpers.getRandomHex() +
+      Helpers.getRandomHex()
+    );
+  }
+
+  /**
+   * Return a random uppercase hex number on 2 digits
+   */
+  static getRandomHex(): string {
+    let rand = Helpers.getRandomInt(255).toString(16).toUpperCase();
+    if (rand.length === 1) {
+      rand = 'O' + rand;
+    }
+    return rand;
+  }
 }

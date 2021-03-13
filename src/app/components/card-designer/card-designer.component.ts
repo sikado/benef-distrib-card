@@ -15,7 +15,7 @@ import { CanvaService } from '../../services/canva.service';
   styleUrls: ['./card-designer.component.scss'],
 })
 export class CardDesignerComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('Konva') Konva?: ElementRef<HTMLElement>;
+  @ViewChild('Konva') KonvaContainer?: ElementRef<HTMLElement>;
 
   importedDataKeys: string[] = [];
 
@@ -33,8 +33,8 @@ export class CardDesignerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.Konva !== undefined) {
-      this.canvaService.displayCanva(this.Konva.nativeElement);
+    if (this.KonvaContainer !== undefined) {
+      this.canvaService.displayCanva(this.KonvaContainer.nativeElement);
     }
   }
 
@@ -54,5 +54,9 @@ export class CardDesignerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onAddData(key: string): void {
     this.canvaService.addData(key);
+  }
+
+  onAddImg(e: MouseEvent): void {
+    this.canvaService.addImg(e.target as HTMLImageElement);
   }
 }
