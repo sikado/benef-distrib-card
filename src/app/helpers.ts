@@ -35,7 +35,7 @@ export class Helpers {
   static getRandomHex(): string {
     let rand = Helpers.getRandomInt(255).toString(16).toUpperCase();
     if (rand.length === 1) {
-      rand = 'O' + rand;
+      rand = '0' + rand;
     }
     return rand;
   }
