@@ -57,12 +57,12 @@ export class CanvaService {
     });
   }
 
-  getStage() {
-    return this.stage;
+  displayCanva(domElem: HTMLElement): void {
+    domElem.appendChild(this.container);
   }
 
-  getContainer() {
-    return this.container;
+  getStage() {
+    return this.stage;
   }
 
   getMainLayer() {

@@ -33,7 +33,9 @@ export class CardDesignerComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.Konva?.nativeElement.appendChild(this.canvaService.getContainer());
+    if (this.Konva !== undefined) {
+      this.canvaService.displayCanva(this.Konva.nativeElement);
+    }
   }
 
   ngOnInit(): void {}
