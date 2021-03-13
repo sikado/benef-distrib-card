@@ -1,27 +1,25 @@
+_Ce projet est seulement un "proof of concept". C'est donc très minimal et probablement assez buggé_
+
 # BenefDistribCard
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.3.
+![GitHub](https://img.shields.io/github/license/sikado/benef-distrib-card?style=flat-square)
+![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/sikado/benef-distrib-card?style=flat-square)
+![Version](https://img.shields.io/badge/version-alpha-blue?style=flat-square)
 
-## Development server
+Ce projet a pour objectif de générer des planches de carte d'identification pour des bénéficiaires d'aide humanitaire.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Il permet d'importer des données d'identification, de créer un modèle de carte et de générer des planches de cartes pour toutes les entrées du fichier importé.
 
-## Code scaffolding
+## Archi
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Ce projet utilise le framework Angular et s'exécute entièrement côté client. Une fois ouvert une première fois en ligne, il devient accessible 100% hors connexion (via la techno PWA)
 
-## Build
+## Usage
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Si vous souhaitez compiler le projet locallement :
 
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+```bash
+git clone https://github.com/sikado/benef-distrib-card.git
+npm install
+npm run build:prod
+```
