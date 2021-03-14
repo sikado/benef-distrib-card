@@ -3,9 +3,6 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "prestart": "copyfiles --flat node_modules/pdfjs-dist/build/pdf.worker.min.js src/assets/",
-    "prebuild:prod": "npm run prestart",
-    "prebuild": "npm run prestart",
     "start": "ng serve",
     "build": "ng build",
     "build:prod": "ng build --prod",
@@ -50,7 +47,6 @@
     "@types/pdfjs-dist": "^2.1.7",
     "@typescript-eslint/eslint-plugin": "4.16.1",
     "@typescript-eslint/parser": "4.16.1",
-    "copyfiles": "^2.4.1",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-import": "2.22.1",
