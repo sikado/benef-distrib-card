@@ -6,37 +6,37 @@
           <div class="row mb-3">
             <p class="lead">Export Configuration</p>
           </div>
-          <div class="row mb-3" formGroupName="grid">
-            <label class="col-4 col-form-label">Grid</label>
-            <div class="col input-group mb-3">
+          <div class="row">
+            <p class="col-6">Taille des cartes :</p>
+            <p class="col">{{ cardSize.width }}*{{ cardSize.height }}mm</p>
+          </div>
+          <hr />
+          <div class="row mb-3">
+            <label class="col-6 col-form-label" for="printMarginInput">
+              Marges d'impression
+            </label>
+            <div class="col input-group">
               <input
                 type="number"
+                name="printMarginInput"
+                step="0.1"
                 class="form-control"
-                name="gridXInput"
-                formControlName="x"
-                aria-label="Grid X"
+                formControlName="printMargin"
               />
-              <span class="input-group-text">X</span>
-              <input
-                type="number"
-                class="form-control"
-                aria-label="Grid Y"
-                name="gridYInput"
-                formControlName="y"
-              />
+              <span class="input-group-text" id="basic-addon2">mm</span>
             </div>
           </div>
           <div class="row mb-3">
-            <label for="marginInput" class="col-4 col-form-label">
-              Margin
+            <label for="internalMarginInput" class="col-6 col-form-label">
+              Margin interne
             </label>
             <div class="col input-group mb-3">
               <input
                 type="number"
-                name="marginInput"
+                name="internalMarginInput"
                 step="0.1"
                 class="form-control"
-                formControlName="margin"
+                formControlName="internalMargin"
               />
               <span class="input-group-text" id="basic-addon2">mm</span>
             </div>

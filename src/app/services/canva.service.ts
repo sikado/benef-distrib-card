@@ -193,14 +193,6 @@ export class CanvaService {
     this.getMainLayer().add(img).batchDraw();
   }
 
-  getPDFPreview(
-    data: keyValue[],
-    grid: { x: number; y: number },
-    margin: number
-  ) {
-    return this.generatePDF(data, grid, margin, true).output('datauristring');
-  }
-
   unselectAll(): void {
     const tr: Konva.Transformer | undefined = this.stage.findOne(
       'Transformer'
@@ -211,12 +203,36 @@ export class CanvaService {
     }
   }
 
+  /**
+   * Impression PDF de la première page des data
+   *
+   * @param data
+   * @param printMargin
+   * @param internalMargin
+   * @returns PDF en dataURI
+   */
+  getPDFPreview(data: keyValue[], printMargin: number, internalMargin: number) {
+    return this.generatePDF(data, printMargin, internalMargin, true).output(
+      'datauristring'
+    );
+  }
+
+  /**
+   * Impression PDF des data
+   *
+   * @param data
+   * @param printMargin Marges d'impression (externes)
+   * @param internalMargin Marges entre les cartes (interne)
+   * @returns Un nouvel onglet avec le PDF
+   */
   exportToPDF(
     data: keyValue[],
-    grid: { x: number; y: number },
-    margin: number
+    printMargin: number,
+    internalMargin: number
   ): void {
-    this.generatePDF(data, grid, margin).output('dataurlnewwindow');
+    this.generatePDF(data, printMargin, internalMargin).output(
+      'dataurlnewwindow'
+    );
   }
 
   getCardSize() {
@@ -225,25 +241,44 @@ export class CanvaService {
 
   private generatePDF(
     data: keyValue[],
-    grid: { x: number; y: number },
-    margin: number,
+    printMargin: number,
+    internalMargin: number,
     preview = false
   ): jsPDF {
-    const RATIO = 0.5; // x/y
-    const PAPER_SIZE = { x: 210, y: 297 }; // A4
+    const PAPER_SIZE = { width: 210, height: 297 }; // A4
 
-    // On cherche la carte la plus grande possible
-    const maxSizeX = (PAPER_SIZE.x - margin * (grid.x + 1)) / grid.x;
-    const maxSizeY = (PAPER_SIZE.y - margin * (grid.y + 1)) / grid.y;
-    let imgSize = { w: maxSizeX, h: maxSizeX * RATIO };
-    if (imgSize.h > maxSizeY) {
-      imgSize = { w: maxSizeY / RATIO, h: maxSizeY * RATIO };
+    // On cherche le nombre de carte qu'on peut placer sur une ligne
+    let max_col = 0;
+    while (
+      2 * printMargin +
+        this.cardSize.width +
+        (internalMargin + this.cardSize.width) * max_col <
+      PAPER_SIZE.width
+    ) {
+      max_col++;
+    }
+    if (max_col === 0) {
+      throw new Error('Carte trop large');
+    }
+
+    // On cherche le nombre de carte qu'on peut placer sur une colonne
+    let max_line = 0;
+    while (
+      2 * printMargin +
+        this.cardSize.height +
+        (internalMargin + this.cardSize.height) * max_line <
+      PAPER_SIZE.height
+    ) {
+      max_line++;
+    }
+    if (max_line === 0) {
+      throw new Error('Carte trop haute');
     }
 
     const pdf = new jsPDF('p', 'mm', 'a4');
 
     if (data.length === 0) {
-      pdf.text('Missing imported data', margin, margin);
+      pdf.text('Missing imported data', printMargin, printMargin);
       return pdf;
     }
 
@@ -251,10 +286,10 @@ export class CanvaService {
 
     this.unselectAll();
 
-    // Breaké si on est à la fin de importedData
+    // Breaké si on est à la fin de importedData ou page1
     while (true) {
-      for (let i = 0; i < grid.x && dataIndex < data.length; i++) {
-        for (let j = 0; j < grid.y && dataIndex < data.length; j++) {
+      for (let i = 0; i < max_col && dataIndex < data.length; i++) {
+        for (let j = 0; j < max_line && dataIndex < data.length; j++) {
           this.getMainLayer()
             .find('.#Data')
             .each((node) => {
@@ -269,10 +304,10 @@ export class CanvaService {
           pdf.addImage(
             // this.stage.toDataURL({ pixelRatio: 2 }) || '',
             this.stage.toCanvas({ pixelRatio: 2 }) || '',
-            margin + (margin + imgSize.w) * i,
-            margin + (margin + imgSize.h) * j,
-            imgSize.w,
-            imgSize.h
+            printMargin + (internalMargin + this.cardSize.width) * i,
+            printMargin + (internalMargin + this.cardSize.height) * j,
+            this.cardSize.width,
+            this.cardSize.height
           );
           dataIndex++;
         }

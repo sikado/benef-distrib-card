@@ -23,12 +23,10 @@ export class CardExportComponent implements OnInit, AfterViewInit {
 
   importedData: keyValue[] = [];
   pdfConfigForm = this.fb.group({
-    margin: [7.0],
-    grid: this.fb.group({
-      x: [2],
-      y: [5],
-    }),
+    printMargin: [5.0],
+    internalMargin: [0],
   });
+  cardSize;
 
   constructor(
     private importedDataService: ImportedDataService,
@@ -42,9 +40,15 @@ export class CardExportComponent implements OnInit, AfterViewInit {
       this.displayPreview(); // Update de la preview lors des changements du form de config
     });
     PdfLib.GlobalWorkerOptions.workerSrc = './assets/pdf.worker.min.js';
+    this.cardSize = this.canvaService.getCardSize();
   }
+
   ngAfterViewInit(): void {
-    this.displayPreview(); // Premier affichage de la preview
+    try {
+      this.displayPreview(); // Premier affichage de la preview
+    } catch (err) {
+      alert('La carte est trop grande pour une feuille A4 en portait');
+    }
   }
 
   ngOnInit(): void {}
@@ -52,8 +56,8 @@ export class CardExportComponent implements OnInit, AfterViewInit {
   onExport(): void {
     this.canvaService.exportToPDF(
       this.importedData,
-      this.pdfConfigForm.get('grid')?.value,
-      this.pdfConfigForm.get('margin')?.value
+      this.pdfConfigForm.get('printMargin')?.value,
+      this.pdfConfigForm.get('internalMargin')?.value
     );
   }
 
@@ -69,8 +73,8 @@ export class CardExportComponent implements OnInit, AfterViewInit {
 
     const pdfPreviewData = this.canvaService.getPDFPreview(
       this.importedData,
-      this.pdfConfigForm.get('grid')?.value,
-      this.pdfConfigForm.get('margin')?.value
+      this.pdfConfigForm.get('printMargin')?.value,
+      this.pdfConfigForm.get('internalMargin')?.value
     );
 
     const loadingTask = PdfLib.getDocument(pdfPreviewData);
