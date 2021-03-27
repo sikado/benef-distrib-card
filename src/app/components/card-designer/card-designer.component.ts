@@ -18,6 +18,7 @@ export class CardDesignerComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('Konva') KonvaContainer?: ElementRef<HTMLElement>;
 
   importedDataKeys: string[] = [];
+  cardSize; // Taille de la carte finale, en mm
 
   constructor(
     private importedDataService: ImportedDataService,
@@ -30,6 +31,7 @@ export class CardDesignerComponent implements OnInit, OnDestroy, AfterViewInit {
         this.importedDataKeys = [];
       }
     });
+    this.cardSize = this.canvaService.getCardSize();
   }
 
   ngAfterViewInit() {
@@ -58,5 +60,15 @@ export class CardDesignerComponent implements OnInit, OnDestroy, AfterViewInit {
 
   onAddImg(e: MouseEvent): void {
     this.canvaService.addImg(e.target as HTMLImageElement);
+  }
+
+  onCardSizeChange(): void {
+    this.canvaService.changeSize(this.cardSize);
+  }
+
+  setPredefinedRatio(x: number, y: number): void {
+    this.cardSize.width = x;
+    this.cardSize.height = y;
+    this.onCardSizeChange();
   }
 }

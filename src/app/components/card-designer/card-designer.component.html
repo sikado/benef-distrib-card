@@ -158,12 +158,78 @@
   </div>
 
   <!-- Konva -->
-  <div class="col-auto">
-    <div class="card">
+  <div class="col-7">
+    <div class="card bg-secondary p-5">
       <div #Konva></div>
     </div>
   </div>
   <div class="col-3">
+    <div class="card mb-3">
+      <div class="card-body">
+        <form>
+          <div class="row justify-content-between mb-2">
+            <div class="col-auto">
+              <label class="" for="">
+                Taille Carte <small>(en mm)</small>
+              </label>
+            </div>
+            <div class="col-auto">
+              <button
+                type="submit"
+                class="btn btn-outline-secondary btn-sm"
+                (click)="onCardSizeChange()"
+              >
+                Modifier
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cardSizeWidth"
+                  name="cardSizeWidth"
+                  [(ngModel)]="cardSize.width"
+                />
+                <div class="input-group-text">X</div>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cardSizeHeight"
+                  name="cardSizeHeight"
+                  [(ngModel)]="cardSize.height"
+                />
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="row mt-3">
+            <div class="col-auto">
+              <select
+                class="form-select form-select-sm"
+                aria-label="Tailles prédéfinies"
+              >
+                <option selected>Selectionner un taille prédéfinie</option>
+                <option (click)="setPredefinedRatio(85.6, 53.98)">
+                  Carte Bancaire (85,60 × 53,98 mm)
+                </option>
+                <option (click)="setPredefinedRatio(105, 74)">
+                  CNI/A7 (105 × 74 mm)
+                </option>
+                <option (click)="setPredefinedRatio(148, 105)">
+                  A6 (148 x 105 mm)
+                </option>
+                <option (click)="setPredefinedRatio(100, 100)">
+                  Carré (100 x 100 mm)
+                </option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
     <app-obj-editor></app-obj-editor>
   </div>
 </div>

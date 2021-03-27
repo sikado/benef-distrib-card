@@ -18,11 +18,17 @@ export class CanvaService {
     undefined
   );
 
+  readonly DEFAULT_WIDTH = 600;
+  cardSize = {
+    width: 70,
+    height: 35,
+  };
+
   constructor() {
     this.stage = new Konva.Stage({
       container: this.container,
-      width: 600,
-      height: 300,
+      width: this.DEFAULT_WIDTH,
+      height: this.DEFAULT_WIDTH / 2,
     });
     this.stage.add(new Konva.Layer());
 
@@ -57,7 +63,64 @@ export class CanvaService {
     });
   }
 
+  static moveNodes(
+    node: Konva.Node,
+    newRatio: number,
+    oldRatio: number,
+    newStageSize: { width: number; height: number }
+  ): void {
+    if (node.getChildren().length > 0) {
+      node.getChildren().each((childNode) => {
+        CanvaService.moveNodes(childNode, newRatio, oldRatio, newStageSize);
+      });
+    }
+
+    if (node.getType() === 'Shape' && node.name() !== 'cadre') {
+      const nodeOrig = node.getPosition();
+      const nodeSize = {
+        width: node.size().width * node.scaleX(),
+        height: node.size().height * node.scaleY(),
+      };
+
+      if (nodeOrig.y + nodeSize.height > newStageSize.height) {
+        let newY =
+          nodeOrig.y - (nodeOrig.y + nodeSize.height - newStageSize.height);
+        newY = newY < 0 ? 0 : newY;
+        node.setAttr('y', newY);
+      }
+    }
+  }
+
+  changeSize(cardSize: { width: number; height: number }) {
+    this.cardSize = cardSize;
+    const sizeRatio = cardSize.width / cardSize.height;
+
+    this.unselectAll();
+    const currentSize = this.stage.size();
+    const size = {
+      width: currentSize.width,
+      height: currentSize.width / sizeRatio,
+    };
+    this.stage.size(size);
+    CanvaService.moveNodes(
+      this.stage,
+      sizeRatio,
+      currentSize.width / currentSize.height,
+      size
+    );
+    this.stage.findOne('.cadre').setAttrs(size);
+    this.getMainLayer().draw();
+  }
+
   displayCanva(domElem: HTMLElement): void {
+    const sizeRatio = this.cardSize.width / this.cardSize.height;
+    const size = {
+      width: domElem.clientWidth,
+      height: domElem.clientWidth / sizeRatio,
+    };
+    this.stage.size(size);
+    this.stage.findOne('.cadre').setAttrs(size);
+    this.getMainLayer().draw();
     domElem.appendChild(this.container);
   }
 
@@ -154,6 +217,10 @@ export class CanvaService {
     margin: number
   ): void {
     this.generatePDF(data, grid, margin).output('dataurlnewwindow');
+  }
+
+  getCardSize() {
+    return this.cardSize;
   }
 
   private generatePDF(
